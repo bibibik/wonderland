@@ -17,41 +17,56 @@ public class mainclass {
 
 			int fid = 0;
 			String dburl = "jdbc:postgresql://localhost:5432/postgres";
-			String dbacct = "postgres", passwd = "1234";
+			String dbacct = "postgres", passwd = "gksrhkd573";
 			Connection dbconn = DriverManager.getConnection(dburl, dbacct, passwd);
 			PreparedStatement p = null;
 
 			// Create Facility, Town, UserInfo, ScoreType table
 
-			System.out.println("Creating Facility table and insert data.....");
-			p = dbconn.prepareStatement(
-					"create table Facility(fID int, ftype varchar(10), name varchar(40), addr varchar(70), latitude numeric(10,8), longitude numeric(10,7));");
-			p.executeUpdate();
-			fid = facility.pharmacy(dbconn, p, fid);
-			fid = facility.hospital(dbconn, p, fid);
-			fid = facility.protectarea(dbconn, p, fid);
-			System.out.println("Facility table Done");
-			List<String> ftype = other.ftype(dbconn, p);
+			/*
+			 * System.out.println("Creating Facility table and insert data....."); p =
+			 * dbconn.prepareStatement(
+			 * "create table Facility(fID int primary key, ftype varchar(10), name varchar(40), addr varchar(70), latitude numeric(10,8), longitude numeric(10,7));"
+			 * ); p.executeUpdate(); fid = facility.pharmacy(dbconn, p, fid); fid =
+			 * facility.hospital(dbconn, p, fid); fid = facility.protectarea(dbconn, p,
+			 * fid); System.out.println("Facility table Done");
+			 */
 
 			// Town table create
-
-			System.out.println("Creating Town and insert data....");
-			other.town(dbconn, p, ftype);
-			System.out.println("Town table Done");
+			List<String> ftype = other.ftype(dbconn, p);
+			/*
+			 * System.out.println("Creating Town and insert data...."); p =
+			 * dbconn.prepareStatement(
+			 * "create table town(townname_gu varchar(10), townname_dong varchar(10), ftype varchar(10), num int, primary key(townname_gu,  townname_dong, ftype));"
+			 * ); p.executeUpdate(); other.town(dbconn, p, ftype);
+			 * System.out.println("Town table Done");
+			 */
 
 			// UserInfo table create
-			System.out.println("Creating UserInfo, ScoreType, ScoreTown table...");
-			p = dbconn.prepareStatement("create table userinfo(userID varchar(50), passwd varchar(100));");
-			p.executeUpdate();
+			/*
+			 * System.out.println("Creating UserInfo, ScoreType, ScoreTown table..."); p =
+			 * dbconn.
+			 * prepareStatement("create table userinfo(userID varchar(50) primary key, passwd varchar(100));"
+			 * ); p.executeUpdate();
+			 */
 			// ScoreType table create
-			p = dbconn
-					.prepareStatement("create table scoretype(userID varchar(50), fType varchar(10), typeScore int);");
-			p.executeUpdate();
+			/*
+			 * p = dbconn.prepareStatement(
+			 * "create table scoretype(userID varchar(50) references userInfo(userID) on delete cascade, fType varchar(10), typeScore int);"
+			 * ); p.executeUpdate();
+			 */
+			// create trigger : set 0 when user update scoreType
+			/*
+			 * p = dbconn.
+			 * prepareStatement("create or replace function setzero() returns trigger as $up$ begin update scoretown set townScore = 0 where userid = new.userid; return new; end; $up$ language plpgsql;  create trigger Up after update on scoretype for each row execute function setzero();"
+			 * ); p.executeUpdate();
+			 */
 			// ScoreTown table create
-			p = dbconn.prepareStatement(
-					"create table scoretown(userID varchar(50), townname_gu varchar(10), townname_dong varchar(10), townScore bigint);");
-			p.executeUpdate();
-
+			/*
+			 * p = dbconn.prepareStatement(
+			 * "create table scoretown(userID varchar(50) references userInfo(userID) on delete cascade , townname_gu varchar(10), townname_dong varchar(10), townScore bigint);"
+			 * ); p.executeUpdate();
+			 */
 			/* Get user id */
 			String suid = new UserInfo(dbconn, p).login();
 

@@ -8,7 +8,7 @@ public class facility {
 
    /*서울에 응급실이 있는 병원과 그 병원 중 소아과가 있는 병원의 이름, 주소, 위도, 경도를 가져온다.*/
    public static int hospital(Connection dbconn, PreparedStatement p, int fid) throws IOException, SQLException {
-	   System.out.println("Creating hospital...");
+	   System.out.println("Insert hospital...");
 	   //서울에 있는 구
       String arr[] = { "강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구",
             "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구" };
@@ -104,7 +104,6 @@ public class facility {
          fid++;
          String addr = (String) lst.get(1);
          String jiaddr = "";
-         System.out.println(lst.get(0)+" "+lst.get(1)+" "+ lst.get(2)+" "+lst.get(3)+" "+lst.get(4));
 			if (lst.get(4).equals("A1120796") || lst.get(4).equals("A1100025") || lst.get(4).equals("A1100029")) {
 				jiaddr = doro2ji_addr(addr.substring(addr.lastIndexOf("특별시") + 4, addr.lastIndexOf(","))); // 강남세브란스병원, 이화여대서울병원, 에이치플러스양지병원
 				// 특별시 뒤에부터 , 앞까지(도로명 주소)의 String을 받아 지번 주소로 바꾼다.
@@ -127,14 +126,14 @@ public class facility {
 			}
       }
       
-      System.out.println("Done");
+      System.out.println("Hospital Done");
 
       return fid;
 
    }
 
    public static int pharmacy(Connection dbconn, PreparedStatement p, int fid) throws IOException, SQLException {
-	   System.out.println("Creating Pharmacy....");
+	   System.out.println("Insert Pharmacy....");
 	   //약국의 개수는 4000개가 넘는데 한 페이지 최대 목록은 100개 이다 따라서 <totalcount>에 있는 총 목록 수를 가져와서 100으로 나눠 페이지를 하나씩 증가시키면서 약국의 정보를 가져온다.
       StringBuilder urlBuilder = new StringBuilder(
             "http://apis.data.go.kr/B552657/ErmctInsttInfoInqireService/getParmacyListInfoInqire"); /* URL */
@@ -236,13 +235,14 @@ public class facility {
 
          }
       }
-      System.out.println("Done");
+      System.out.println("Pharmacy Done");
       return fid;
    }
 
     //csv 파일 기반의 시설 정보를 facility Table에 insert함
  	public static int protectarea(Connection dbconn, PreparedStatement p, int fid) throws SQLException {
  		try {
+ 			System.out.println("Insert 유치원, 어린이집, 초등학교, 키즈카페, 중학교, 고등학교 ....");
 
  			String sql = "insert into Facility values (?,?,?,?,?,?)";
  			p = dbconn.prepareStatement(sql);
@@ -338,7 +338,7 @@ public class facility {
  		} catch (IOException e) {
  			System.out.println(e.getMessage());
  		}
-
+ 		System.out.println("Insert done");
  		return fid;
  	}
 
