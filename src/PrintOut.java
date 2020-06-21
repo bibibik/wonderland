@@ -97,6 +97,7 @@ public class PrintOut {
 					break;
 				case 'q':
 				case 'Q':
+					System.out.println("프로그램이 종료되었습니다.");
 					return;
 				default:
 					System.out.println("잘못 입력하셨습니다.");

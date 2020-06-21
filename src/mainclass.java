@@ -52,7 +52,7 @@ public class mainclass {
 			// ScoreType table create
 			
 			p = dbconn.prepareStatement(
-					"create table scoretype(userID varchar(50) references userInfo(userID) on delete cascade, fType varchar(10), typeScore int);");
+					"create table scoretype(userID varchar(50) references userInfo(userID) on delete cascade, fType varchar(10), typeScore int, primary key(userID));");
 			p.executeUpdate();
 
 			// create trigger : set 0 when user update scoreType
