@@ -25,7 +25,7 @@ public class mainclass {
          try {
          System.out.println("Creating Facility table and insert data.....");
          p = dbconn.prepareStatement(
-               "create table Facility(fID int, ftype varchar(10), name varchar(40), addr varchar(70), latitude numeric(10,8), longitude numeric(10,7));");
+               "create table Facility(fID int primary key, ftype varchar(10), name varchar(40), addr varchar(70), latitude numeric(10,8), longitude numeric(10,7));");
          p.executeUpdate();
          fid = facility.pharmacy(dbconn, p, fid);
          fid = facility.hospital(dbconn, p, fid);
@@ -41,6 +41,8 @@ public class mainclass {
          // Town table create
          try {
          System.out.println("Creating Town and insert data....");
+         p = dbconn.prepareStatement("create table town(townname_gu varchar(10), townname_dong varchar(10), ftype varchar(10), num int, primary key(townname_gu,  townname_dong, ftype));");
+         p.executeUpdate();
          other.town(dbconn, p, ftype);
          System.out.println("Town table Done");
 
@@ -50,7 +52,7 @@ public class mainclass {
          try {
          // UserInfo table create
          System.out.println("Creating UserInfo, ScoreType, ScoreTown table...");
-         p = dbconn.prepareStatement("create table userinfo(userID varchar(50), passwd varchar(100));");
+         p = dbconn.prepareStatement("create table userinfo(userID varchar(50) primary key, passwd varchar(100));");
          p.executeUpdate();
          }catch (SQLException e){
             System.out.println("Already UserInfo table");
@@ -58,7 +60,7 @@ public class mainclass {
          // ScoreType table create
          try {
          p = dbconn
-               .prepareStatement("create table scoretype(userID varchar(50), fType varchar(10), typeScore int);");
+               .prepareStatement("create table scoretype(userID varchar(50) references userInfo(userID) on delete cascade, fType varchar(10), typeScore int, primary key(userID, fType));");
          p.executeUpdate();
          }catch (SQLException e){
             System.out.println("Already scoretype table");
@@ -67,7 +69,7 @@ public class mainclass {
          // ScoreTown table create
          try {
          p = dbconn.prepareStatement(
-               "create table scoretown(userID varchar(50), townname_gu varchar(10), townname_dong varchar(10), townScore bigint);");
+        		 "create table scoretown(userID varchar(50) references userInfo(userID) on delete cascade , townname_gu varchar(10), townname_dong varchar(10), townScore int, primary key(userID, townname_gu,  townname_dong));");
          p.executeUpdate();
          } catch (SQLException e){
             System.out.println("Already scoretown table");
