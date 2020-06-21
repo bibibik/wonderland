@@ -17,7 +17,7 @@ public class mainclass {
 
          int fid = 0;
          String dburl = "jdbc:postgresql://localhost:5432/postgres";
-         String dbacct = "postgres", passwd = "1234";
+         String dbacct = "postgres", passwd = "gksrhkd573";
          Connection dbconn = DriverManager.getConnection(dburl, dbacct, passwd);
          PreparedStatement p = null;
 
@@ -41,7 +41,7 @@ public class mainclass {
          // Town table create
          try {
          System.out.println("Creating Town and insert data....");
-         p = dbconn.prepareStatement("create table town(townname_gu varchar(10), townname_dong varchar(10), ftype varchar(10), num int, primary key(townname_gu,  townname_dong, ftype));");
+         p = dbconn.prepareStatement("create table town(townname_gu varchar(10), townname_dong varchar(10), ftype varchar(10), num int, primary key(townname_dong, townname_gu, ftype));");
          p.executeUpdate();
          other.town(dbconn, p, ftype);
          System.out.println("Town table Done");
@@ -51,12 +51,20 @@ public class mainclass {
          }
          try {
          // UserInfo table create
-         System.out.println("Creating UserInfo, ScoreType, ScoreTown table...");
+         System.out.println("Creating UserInfo, Trigger ScoreType, ScoreTown table...");
          p = dbconn.prepareStatement("create table userinfo(userID varchar(50) primary key, passwd varchar(100));");
          p.executeUpdate();
          }catch (SQLException e){
             System.out.println("Already UserInfo table");
-         }
+         } 
+         try {
+             // create trigger 
+             p = dbconn.prepareStatement("create or replace function setzero() returns trigger as $up$ begin update scoretown set townScore = 0 where userid = new.userid; return new; end; $up$ language plpgsql;  create trigger Up after update on scoretype for each row execute function setzero();");
+             p.executeUpdate();
+             }catch (SQLException e){
+                System.out.println("Already Trigger");
+             }
+         
          // ScoreType table create
          try {
          p = dbconn
@@ -77,7 +85,6 @@ public class mainclass {
          
          /* Get user id */
          String suid = new UserInfo(dbconn, p).login();
-
          /* Get user input */
          String y_n = other.scoreType(dbconn, p, ftype, suid);
          System.out.println("Creating ScoreTown...");
