@@ -64,7 +64,7 @@ public class mainclass {
 			// ScoreTown table create
 
 			p = dbconn.prepareStatement(
-					"create table scoretown(userID varchar(50) references userInfo(userID) on delete cascade , townname_gu varchar(10), townname_dong varchar(10), townScore int, primary key(userID townname_gu,  townname_dong));");
+					"create table scoretown(userID varchar(50) references userInfo(userID) on delete cascade , townname_gu varchar(10), townname_dong varchar(10), townScore int, primary key(userID, townname_gu,  townname_dong));");
 			p.executeUpdate();
 			 
 			/* Get user id */
